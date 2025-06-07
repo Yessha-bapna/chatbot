@@ -1,4 +1,4 @@
-# chatbot.py
+
 
 import streamlit as st
 import requests
@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 
 
-# Set page layout
 st.set_page_config(page_title="My Assistant", layout="centered")
 st.markdown("""
     <style>
@@ -23,7 +22,7 @@ st.markdown("""
 st.markdown("<h2 style='text-align: center;'>🤖 Your Personal AI Assistant</h2>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center;'>Choose a model to start chatting</p>", unsafe_allow_html=True)
 
-# Step 1: Ask user to choose model
+
 if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
@@ -39,16 +38,16 @@ if not st.session_state.selected_model:
         st.rerun()
     st.stop()
 
-# Step 2: Initialize chat after model is selected
+
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = [{"role": "assistant", "content": f"Hi! You're now chatting with `{st.session_state.selected_model}`. How can I help you today?"}]
 
-# Show chat history
+
 for msg in st.session_state.chat_history:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-# Chat input
+
 user_input = st.chat_input("Ask me anything...")
 
 if user_input:
