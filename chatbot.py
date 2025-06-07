@@ -6,8 +6,8 @@ import requests
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # Load variables from .env
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
+
 
 # Set page layout
 st.set_page_config(page_title="My Assistant", layout="centered")
