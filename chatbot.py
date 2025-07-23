@@ -29,9 +29,7 @@ if "selected_model" not in st.session_state:
 if not st.session_state.selected_model:
     model = st.selectbox("🔧 Choose a model:", [
         "llama3-8b-8192",
-        "llama3-70b-8192",
-        "mixtral-8x7b-32768",
-        "gemma-7b-it"
+        "llama3-70b-8192"
     ])
     if st.button("Start Chat"):
         st.session_state.selected_model = model
