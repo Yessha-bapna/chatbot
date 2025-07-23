@@ -2,6 +2,7 @@ import streamlit as st
 import requests
 import subprocess
 import os
+import platform  
 
 # Load your Groq API Key from .streamlit/secrets.toml
 GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
@@ -28,15 +29,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# Sidebar info
-with st.sidebar:
-    st.markdown("### 🛠️ AutoCode Bot")
-    st.write("Enter coding tasks like:")
-    st.code("Create a Python program for bubble sort")
-    st.write("It will generate code, save it, and open it in VS Code or Notepad.")
 
-st.markdown("<h2 style='text-align: center;'>🤖 AutoCode AI</h2>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center;'>Choose a model to start</p>", unsafe_allow_html=True)
 
 # --- Model Selection ---
 if "selected_model" not in st.session_state:
@@ -74,16 +67,32 @@ def detect_language(text):
     return "txt"
 
 # --- Save and Open File ---
+
+
 def save_and_open_file(code, lang):
     ext = EXTENSIONS.get(lang, "txt")
     filename = f"autocode_output.{ext}"
     with open(filename, "w", encoding="utf-8") as f:
         f.write(code)
 
+    os_name = platform.system().lower()
+
     try:
-        subprocess.Popen(["code", filename])  # VS Code
+        # Try VS Code first
+        subprocess.Popen(["code", filename])
     except FileNotFoundError:
-        subprocess.Popen(["notepad", filename])  # Notepad (Windows)
+        try:
+            if "windows" in os_name:
+                subprocess.Popen(["notepad", filename])
+            elif "darwin" in os_name:  # macOS
+                subprocess.Popen(["open", "-a", "TextEdit", filename])
+            elif "linux" in os_name:
+                subprocess.Popen(["gedit", filename])
+            else:
+                st.warning("⚠️ Couldn't detect a suitable editor. Please open the file manually.")
+        except Exception as e:
+            st.warning(f"⚠️ Failed to open editor: {e}")
+
 
 # --- Show Chat History ---
 for msg in st.session_state.chat_history:
