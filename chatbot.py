@@ -9,84 +9,71 @@ st.set_page_config(page_title="AutoCode AI", layout="wide")
 
 st.markdown("""
     <style>
-    /* Fonts and Reset */
-    html, body, [class*="css"]  {
+    html, body, [class*="css"] {
         font-family: 'Segoe UI', sans-serif;
-        background-color: #f9f9fb;
-        color: #333;
+        background-color: #ffffff;
+        color: #1f2937;
     }
 
-    /* Header */
     .main-title {
         text-align: center;
-        font-size: 2.5rem;
+        font-size: 2.4rem;
         font-weight: 600;
-        background: linear-gradient(to right, #6366F1, #3B82F6);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 0.5rem;
+        margin-top: 2rem;
+        margin-bottom: 0.25rem;
     }
+
     .subtitle {
         text-align: center;
         font-size: 1.1rem;
-        color: #666;
+        color: #6b7280;
         margin-bottom: 2rem;
     }
 
-    /* Chat Messages */
     .stChatMessage {
         padding: 0.75rem 1.2rem;
         border-radius: 12px;
-        margin: 0.6rem 0;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.06);
-        transition: 0.2s ease-in-out;
+        margin: 0.6rem auto;
+        max-width: 60%;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.05);
     }
-    .stChatMessage:hover {
-        transform: scale(1.01);
-    }
+
     .stChatMessage.user {
-        background-color: #e0ecff;
+        background-color: #e0f2fe;
         text-align: right;
     }
+
     .stChatMessage.assistant {
-        background-color: #f1f5f9;
+        background-color: #f3f4f6;
         text-align: left;
     }
 
-    /* Input */
-    .stTextInput>div>div>input {
+    .stTextInput > div > div > input {
+        border-radius: 12px;
         padding: 12px;
-        border-radius: 10px;
-        border: 1px solid #ccc;
+        border: 1px solid #d1d5db;
     }
 
-    /* Buttons & Select */
-    .stButton>button {
-        background-color: #4f46e5;
+    .stButton > button {
+        background-color: #3b82f6;
         color: white;
-        border-radius: 8px;
-        padding: 10px 16px;
         font-weight: bold;
-        transition: 0.3s ease-in-out;
-    }
-    .stButton>button:hover {
-        background-color: #4338ca;
-    }
-    .stSelectbox>div>div>div {
         border-radius: 8px;
-        border: 1px solid #cbd5e1;
+        padding: 10px 20px;
     }
 
-    /* Scroll for chat container */
-    .st-emotion-cache-1kyxreq {
-        max-height: 75vh;
-        overflow-y: auto;
-        padding-bottom: 1rem;
+    .stSelectbox > div > div > div {
+        border-radius: 10px;
+        padding: 10px;
     }
 
-    /* Download button */
     .stDownloadButton {
-        margin-top: 1rem;
+        margin-top: 1.5rem;
+        text-align: center;
+    }
+
+    .stChatInput {
+        margin-top: 3rem;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -136,7 +123,7 @@ if not st.session_state.selected_model:
 
 # --- Chat Initialization ---
 if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
+    st.session_state.chat_history = [{"role": "assistant", "content": "Hey there. Ready to dive in?"}]
 
 system_prompt = {
     "role": "system",
