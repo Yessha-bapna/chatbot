@@ -4,6 +4,92 @@ import subprocess
 import os
 import platform  
 import base64
+# Set up the page configuration
+st.set_page_config(page_title="AutoCode AI", layout="wide")
+
+st.markdown("""
+    <style>
+    /* Fonts and Reset */
+    html, body, [class*="css"]  {
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f9f9fb;
+        color: #333;
+    }
+
+    /* Header */
+    .main-title {
+        text-align: center;
+        font-size: 2.5rem;
+        font-weight: 600;
+        background: linear-gradient(to right, #6366F1, #3B82F6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+    .subtitle {
+        text-align: center;
+        font-size: 1.1rem;
+        color: #666;
+        margin-bottom: 2rem;
+    }
+
+    /* Chat Messages */
+    .stChatMessage {
+        padding: 0.75rem 1.2rem;
+        border-radius: 12px;
+        margin: 0.6rem 0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+        transition: 0.2s ease-in-out;
+    }
+    .stChatMessage:hover {
+        transform: scale(1.01);
+    }
+    .stChatMessage.user {
+        background-color: #e0ecff;
+        text-align: right;
+    }
+    .stChatMessage.assistant {
+        background-color: #f1f5f9;
+        text-align: left;
+    }
+
+    /* Input */
+    .stTextInput>div>div>input {
+        padding: 12px;
+        border-radius: 10px;
+        border: 1px solid #ccc;
+    }
+
+    /* Buttons & Select */
+    .stButton>button {
+        background-color: #4f46e5;
+        color: white;
+        border-radius: 8px;
+        padding: 10px 16px;
+        font-weight: bold;
+        transition: 0.3s ease-in-out;
+    }
+    .stButton>button:hover {
+        background-color: #4338ca;
+    }
+    .stSelectbox>div>div>div {
+        border-radius: 8px;
+        border: 1px solid #cbd5e1;
+    }
+
+    /* Scroll for chat container */
+    .st-emotion-cache-1kyxreq {
+        max-height: 75vh;
+        overflow-y: auto;
+        padding-bottom: 1rem;
+    }
+
+    /* Download button */
+    .stDownloadButton {
+        margin-top: 1rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 # Load your Groq API Key from .streamlit/secrets.toml
 GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
@@ -30,7 +116,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("<h2 style='text-align: center;'>🤖 AutoCode AI </h2>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center;'>Choose a model to start chatting</p>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>Your personal code-writing assistant powered by LLMs</p>", unsafe_allow_html=True)
 
 
 
