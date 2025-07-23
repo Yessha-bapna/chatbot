@@ -9,13 +9,13 @@ GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 
 # File extension mapping
 EXTENSIONS = {
-    "python": "py",
-    "java": "java",
-    "c++": "cpp",
+     "python": "py",
+    "cpp": "cpp",
     "c": "c",
+    "java": "java",
     "javascript": "js",
     "html": "html",
-    "bash": "sh"
+    "text": "txt"
 }
 
 st.set_page_config(page_title="My Assistant", layout="centered")
@@ -61,7 +61,7 @@ def detect_language(text):
     text = text.lower()
     if "python" in text: return "python"
     if "java" in text: return "java"
-    if "c++" in text: return "c++"
+    if "cpp" in text: return "cpp"
     if "c " in text: return "c"
     if "javascript" in text: return "javascript"
     if "html" in text: return "html"
@@ -75,26 +75,20 @@ def detect_language(text):
 def save_and_open_file(code, lang):
     ext = EXTENSIONS.get(lang, "txt")
     filename = f"autocode_output.{ext}"
+
+    # Save code to file
     with open(filename, "w", encoding="utf-8") as f:
         f.write(code)
 
-    os_name = platform.system().lower()
-
     try:
-        # Try VS Code first
+        # Try to open with VS Code
         subprocess.Popen(["code", filename])
     except FileNotFoundError:
         try:
-            if "windows" in os_name:
-                subprocess.Popen(["notepad", filename])
-            elif "darwin" in os_name:  # macOS
-                subprocess.Popen(["open", "-a", "TextEdit", filename])
-            elif "linux" in os_name:
-                subprocess.Popen(["gedit", filename])
-            else:
-                st.warning("⚠️ Couldn't detect a suitable editor. Please open the file manually.")
+            # Fallback to Notepad
+            subprocess.Popen(["notepad", filename])
         except Exception as e:
-            st.warning(f"⚠️ Failed to open editor: {e}")
+            st.warning(f"⚠️ Could not open the file: {e}")
 
 
 # --- Show Chat History ---
