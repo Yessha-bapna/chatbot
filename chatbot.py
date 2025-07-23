@@ -1,15 +1,24 @@
-
-
 import streamlit as st
 import requests
-
+import subprocess
 import os
-from dotenv import load_dotenv
 
+# Load your Groq API Key from .streamlit/secrets.toml
 GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 
+# File extension mapping
+EXTENSIONS = {
+    "python": "py",
+    "java": "java",
+    "c++": "cpp",
+    "c": "c",
+    "javascript": "js",
+    "html": "html",
+    "bash": "sh"
+}
 
-st.set_page_config(page_title="My Assistant", layout="centered")
+# --- UI Setup ---
+st.set_page_config(page_title="AutoCode AI", layout="centered")
 st.markdown("""
     <style>
     .stChatMessage { padding: 0.5rem 1rem; border-radius: 12px; margin: 0.5rem 0; }
@@ -19,10 +28,17 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h2 style='text-align: center;'>🤖 AutoCode AI </h2>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center;'>Choose a model to start chatting</p>", unsafe_allow_html=True)
+# Sidebar info
+with st.sidebar:
+    st.markdown("### 🛠️ AutoCode Bot")
+    st.write("Enter coding tasks like:")
+    st.code("Create a Python program for bubble sort")
+    st.write("It will generate code, save it, and open it in VS Code or Notepad.")
 
+st.markdown("<h2 style='text-align: center;'>🤖 AutoCode AI</h2>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>Choose a model to start</p>", unsafe_allow_html=True)
 
+# --- Model Selection ---
 if "selected_model" not in st.session_state:
     st.session_state.selected_model = None
 
@@ -36,23 +52,52 @@ if not st.session_state.selected_model:
         st.rerun()
     st.stop()
 
-
+# --- Chat Initialization ---
 if "chat_history" not in st.session_state:
-    st.session_state.chat_history = [{"role": "assistant", "content": f"Hi! You're now chatting with AutoCode AI. How can I help you today?"}]
+    st.session_state.chat_history = []
 
+system_prompt = {
+    "role": "system",
+    "content": "You are AutoCode Bot. Generate only the required code (no explanations, no comments unless asked). Detect the language from the prompt and respond only with clean code."
+}
 
+# --- Language Detection ---
+def detect_language(text):
+    text = text.lower()
+    if "python" in text: return "python"
+    if "java" in text: return "java"
+    if "c++" in text: return "c++"
+    if "c " in text: return "c"
+    if "javascript" in text: return "javascript"
+    if "html" in text: return "html"
+    if "bash" in text or "shell" in text: return "bash"
+    return "txt"
+
+# --- Save and Open File ---
+def save_and_open_file(code, lang):
+    ext = EXTENSIONS.get(lang, "txt")
+    filename = f"autocode_output.{ext}"
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(code)
+
+    try:
+        subprocess.Popen(["code", filename])  # VS Code
+    except FileNotFoundError:
+        subprocess.Popen(["notepad", filename])  # Notepad (Windows)
+
+# --- Show Chat History ---
 for msg in st.session_state.chat_history:
     with st.chat_message(msg["role"]):
         st.markdown(msg["content"])
 
-
-user_input = st.chat_input("Ask me anything...")
+# --- User Input ---
+user_input = st.chat_input("Enter your coding task...")
 
 if user_input:
     st.chat_message("user").markdown(user_input)
     st.session_state.chat_history.append({"role": "user", "content": user_input})
 
-    with st.spinner("Thinking..."):
+    with st.spinner("Generating your code..."):
         try:
             response = requests.post(
                 "https://api.groq.com/openai/v1/chat/completions",
@@ -62,7 +107,7 @@ if user_input:
                 },
                 json={
                     "model": st.session_state.selected_model,
-                    "messages": st.session_state.chat_history,
+                    "messages": [system_prompt] + st.session_state.chat_history,
                     "temperature": 0.7
                 }
             )
@@ -71,6 +116,11 @@ if user_input:
                 reply = response.json()["choices"][0]["message"]["content"]
                 st.session_state.chat_history.append({"role": "assistant", "content": reply})
                 st.chat_message("assistant").markdown(reply)
+
+                # Detect language and save code
+                lang = detect_language(user_input)
+                save_and_open_file(reply, lang)
+
             else:
                 error_msg = f"⚠️ Error {response.status_code}: {response.text}"
                 st.session_state.chat_history.append({"role": "assistant", "content": error_msg})
