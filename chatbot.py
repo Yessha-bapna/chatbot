@@ -46,7 +46,7 @@ st.markdown("""
     .stChatMessage.assistant {
         background-color: #f3f4f6;
         text-align: left;
-        max-width: 90% !important;
+        max-width: 50% !important;
     }
 
     .stChatMessage.assistant pre {
