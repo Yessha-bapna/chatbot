@@ -18,8 +18,7 @@ EXTENSIONS = {
     "bash": "sh"
 }
 
-# --- UI Setup ---
-st.set_page_config(page_title="AutoCode AI", layout="centered")
+st.set_page_config(page_title="My Assistant", layout="centered")
 st.markdown("""
     <style>
     .stChatMessage { padding: 0.5rem 1rem; border-radius: 12px; margin: 0.5rem 0; }
@@ -28,6 +27,9 @@ st.markdown("""
     .st-emotion-cache-1kyxreq { padding-bottom: 2rem; }
     </style>
 """, unsafe_allow_html=True)
+
+st.markdown("<h2 style='text-align: center;'>🤖 AutoCode AI </h2>", unsafe_allow_html=True)
+st.markdown("<p style='text-align: center;'>Choose a model to start chatting</p>", unsafe_allow_html=True)
 
 
 
@@ -65,6 +67,7 @@ def detect_language(text):
     if "html" in text: return "html"
     if "bash" in text or "shell" in text: return "bash"
     return "txt"
+
 
 # --- Save and Open File ---
 
