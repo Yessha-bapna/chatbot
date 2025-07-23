@@ -3,6 +3,7 @@ import requests
 import subprocess
 import os
 import platform  
+import base64
 
 # Load your Groq API Key from .streamlit/secrets.toml
 GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
@@ -76,19 +77,17 @@ def save_and_open_file(code, lang):
     ext = EXTENSIONS.get(lang, "txt")
     filename = f"autocode_output.{ext}"
 
-    # Save code to file
+    # Save the code to a file
     with open(filename, "w", encoding="utf-8") as f:
         f.write(code)
 
-    try:
-        # Try to open with VS Code
-        subprocess.Popen(["code", filename])
-    except FileNotFoundError:
-        try:
-            # Fallback to Notepad
-            subprocess.Popen(["notepad", filename])
-        except Exception as e:
-            st.warning(f"⚠️ Could not open the file: {e}")
+    # Provide download link
+    st.success(f"✅ Code file generated: `{filename}`")
+    with open(filename, "rb") as file:
+        file_data = file.read()
+        b64 = base64.b64encode(file_data).decode()
+        href = f'<a href="data:file/{ext};base64,{b64}" download="{filename}">📥 Click here to download your file</a>'
+        st.markdown(href, unsafe_allow_html=True)
 
 
 # --- Show Chat History ---
