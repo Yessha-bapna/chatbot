@@ -19,7 +19,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h2 style='text-align: center;'>🤖 Your Personal AI Assistant</h2>", unsafe_allow_html=True)
+st.markdown("<h2 style='text-align: center;'>🤖 AutoCode AI </h2>", unsafe_allow_html=True)
 st.markdown("<p style='text-align: center;'>Choose a model to start chatting</p>", unsafe_allow_html=True)
 
 
@@ -38,7 +38,7 @@ if not st.session_state.selected_model:
 
 
 if "chat_history" not in st.session_state:
-    st.session_state.chat_history = [{"role": "assistant", "content": f"Hi! You're now chatting with `{st.session_state.selected_model}`. How can I help you today?"}]
+    st.session_state.chat_history = [{"role": "assistant", "content": f"Hi! You're now chatting with AutoCode AI. How can I help you today?"}]
 
 
 for msg in st.session_state.chat_history:
