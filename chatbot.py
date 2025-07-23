@@ -46,7 +46,17 @@ st.markdown("""
     .stChatMessage.assistant {
         background-color: #f3f4f6;
         text-align: left;
+        max-width: 90% !important;
     }
+
+    .stChatMessage.assistant pre {
+    background-color: #f9fafb;
+    padding: 12px;
+    overflow-x: auto;
+    border-radius: 8px;
+    white-space: pre;
+    font-size: 0.95rem;
+}        
 
     .stTextInput > div > div > input {
         border-radius: 12px;
